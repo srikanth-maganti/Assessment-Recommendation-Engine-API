@@ -43,4 +43,3 @@ def find_matches(job_summary, top_k=20):
         matches.append(match)
 
     return matches
-find_matches("data scientist required")
