@@ -10,6 +10,7 @@ app = FastAPI()
 @app.get("/")
 def root():
     return {"message": "Welcome to SHL Assessment Recommendation Engine!"}
+    
 
 # Request model
 class QueryRequest(BaseModel):
@@ -22,6 +23,13 @@ class Assessment(BaseModel):
     Remote_Testing: str
     Adaptive_Testing: str
     Language: str
+
+
+@app.post("/debug")
+def debug_endpoint(data: QueryRequest):
+    matches = find_matches(data.job_query)
+    return {"matches": matches[:3]} 
+
 
 @app.post("/summarize", response_model=List[Assessment])
 def search_assessments(data: QueryRequest):
