@@ -1,10 +1,12 @@
+
+import os
+from huggingface_hub import login
 import chromadb
 from sentence_transformers import SentenceTransformer
+login(os.environ["HUGGINGFACEHUB_API_TOKEN"])
 
 CHROMA_SERVER_URL = "https://chroma-server-umbu.onrender.com"
 
-
-# Connect to ChromaDB server hosted on Render
 db_client = chromadb.HttpClient(host=CHROMA_SERVER_URL)
 
 # Get or create collection
