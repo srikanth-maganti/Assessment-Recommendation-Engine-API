@@ -7,7 +7,7 @@ login(os.environ["HUGGINGFACEHUB_API_TOKEN"])
 
 CHROMA_SERVER_URL = "https://chroma-server-umbu.onrender.com"
 
-db_client = chromadb.HttpClient(host=CHROMA_SERVER_URL)
+db_client = chromadb.HttpClient(host=CHROMA_SERVER_URL,port=9001)
 
 # Get or create collection
 collection = db_client.get_or_create_collection(name="assessments")
