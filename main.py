@@ -26,7 +26,7 @@ class Assessment(BaseModel):
 
 # ------------------ Async Wrappers ------------------ #
 
-async def async_find_matches(job_query: str, top_k: int = 20):
+async def async_find_matches(job_query: str, top_k: int = 15):
     loop = asyncio.get_event_loop()
     return await loop.run_in_executor(None, partial(find_matches, job_query, top_k))
 
