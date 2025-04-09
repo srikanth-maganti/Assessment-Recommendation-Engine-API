@@ -5,11 +5,11 @@ import asyncio
 from functools import partial
 from assessment_api import find_matches
 from most_accurate import find_most_accurate
-
+from summarization import summarizer
 app = FastAPI()
 
 
-# ------------------ Models ------------------ #
+
 
 class QueryRequest(BaseModel):
     job_query: str
@@ -24,7 +24,7 @@ class Assessment(BaseModel):
     Language: str
 
 
-# ------------------ Async Wrappers ------------------ #
+
 
 async def async_find_matches(job_query: str, top_k: int = 15):
     loop = asyncio.get_event_loop()
@@ -36,7 +36,9 @@ async def async_find_most_accurate(matches, job_query: str):
     return await loop.run_in_executor(None, partial(find_most_accurate, matches, job_query))
 
 
-# ------------------ Endpoints ------------------ #
+async def async_summarizer(job_query: str):
+    loop = asyncio.get_event_loop()
+    return await loop.run_in_executor(None, partial(summarizer, job_query))
 
 @app.get("/")
 def root():
@@ -49,9 +51,9 @@ async def debug_endpoint(data: QueryRequest):
     return {"matches": matches[:3]}
 
 
-@app.post("/summarize", response_model=List[Assessment])
+@app.post("/search", response_model=List[Assessment])
 async def search_assessments(data: QueryRequest):
-    query = data.job_query
+    query =await async_summarizer(data.job_query)
     matches = await async_find_matches(query)
     best_matches = await async_find_most_accurate(matches, query)
     return best_matches
