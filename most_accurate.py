@@ -50,7 +50,7 @@ Now return the **top 1 to 10  most relavant assessments** in JSON list format li
   {{
     "Assessment_Name": "...",
     "Link": "...",
-    "Duration": "...",
+    "Duration": "...min",
     "Remote_Testing": "...",
     "Adaptive_Testing": "...",
     "Language": "..."
