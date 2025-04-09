@@ -6,6 +6,7 @@ from functools import partial
 from assessment_api import find_matches
 from most_accurate import find_most_accurate
 from summarization import summarizer
+
 app = FastAPI()
 
 
