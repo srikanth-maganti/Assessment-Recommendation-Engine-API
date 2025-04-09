@@ -4,16 +4,15 @@ from pinecone import Pinecone, ServerlessSpec
 from sentence_transformers import SentenceTransformer
 
 
-PINECONE_REGION = "us-east-1"  # or your actual region
-INDEX_NAME = "assessments-index"  # your Pinecone index name
+PINECONE_REGION = "us-east-1"
+INDEX_NAME = "assessments-index"
 
-# Connect to Pinecone
 
 pc = Pinecone(api_key=os.environ["PINECONE_API_KEY"])
 index = pc.Index(INDEX_NAME)
 
 
-embedder = SentenceTransformer("all-MiniLM-L6-v2")
+embedder = SentenceTransformer('./local_model')
 
 
 def embed_text(text):
