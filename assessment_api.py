@@ -1,47 +1,51 @@
-
 import os
-# from huggingface_hub import login
-import chromadb
+import pinecone
+from pinecone import Pinecone, ServerlessSpec
 from sentence_transformers import SentenceTransformer
-# login(os.environ["HUGGINGFACEHUB_API_TOKEN"])
 
-CHROMA_SERVER_URL = "https://chroma-server-umbu.onrender.com"
+# ------------------ Setup ------------------
 
-db_client = chromadb.HttpClient(host=CHROMA_SERVER_URL,port=9001)
+# Your Pinecone API key & environment
+PINECONE_API_KEY = "pcsk_7HgBCG_8EagDAcbKQTaud6No3DQcY776g1Y4vFgAR5siSX6NLMqRLJfpB5FSyiTJh8taLe"
+PINECONE_REGION = "us-east-1"  # or your actual region
+INDEX_NAME = "assessments-index"  # your Pinecone index name
 
-# Get or create collection
-collection = db_client.get_or_create_collection(name="assessments")
+# Connect to Pinecone
+pc = Pinecone(api_key=PINECONE_API_KEY)
+index = pc.Index(INDEX_NAME)
 
+# Load the embedding model
+embedder = SentenceTransformer("all-MiniLM-L6-v2")
 
-# Load embedding model
-embedder = SentenceTransformer('all-MiniLM-L6-v2')
+# ------------------ Helper Functions ------------------
 
-# Function to embed text
+# Embed the input text
 def embed_text(text):
     return embedder.encode(text).tolist()
 
-# Function to find top-k similar assessment matches
-def find_matches(job_summary, top_k=20):
+# Find top-k similar matches using Pinecone
+def find_matches(job_summary, top_k=15):
     query_embedding = embed_text(job_summary)
 
-    results = collection.query(
-        query_embeddings=[query_embedding],
-        n_results=top_k
+    response = index.query(
+        vector=query_embedding,
+        top_k=top_k,
+        include_metadata=True
     )
 
-    # Extract matching documents and metadata
     matches = []
-    for doc, metadata in zip(results['documents'][0], results['metadatas'][0]):
-        match = {
-            "Assessment Name": doc,
+    for match in response['matches']:
+        metadata = match['metadata']
+        matches.append({
+            "Assessment Name": metadata.get("Assessment Name", "N/A"),
             "Job Level": metadata.get("job_level", "N/A"),
             "Description": metadata.get("description", "N/A"),
             "Link": metadata.get("link", "N/A"),
             "Duration": metadata.get("duration", "N/A"),
             "Remote Testing": metadata.get("remote_testing", "N/A"),
             "Adaptive Testing": metadata.get("adaptive_testing", "N/A"),
-            "Language": metadata.get("language", "N/A")
-        }
-        matches.append(match)
+            "Language": metadata.get("language", "N/A"),
+            "Score": match.get("score", 0)
+        })
 
     return matches

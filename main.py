@@ -3,9 +3,8 @@ from pydantic import BaseModel
 from typing import List
 import asyncio
 from functools import partial
-
 from assessment_api import find_matches
-from most_accurate import find_most_accurate  # LLM-based ranking
+from most_accurate import find_most_accurate
 
 app = FastAPI()
 
