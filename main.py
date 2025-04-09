@@ -28,6 +28,7 @@ class Assessment(BaseModel):
 @app.post("/debug")
 def debug_endpoint(data: QueryRequest):
     matches = find_matches(data.job_query)
+    print(matches)
     return {"matches": matches[:3]} 
 
 

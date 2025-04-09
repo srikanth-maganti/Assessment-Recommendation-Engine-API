@@ -34,6 +34,7 @@ Your task: From the provided list, **rank and return the top 10 most relevant as
         prompt += f"""
 Assessment {i+1}:
 - Assessment Name: {match['Assessment Name']}
+- Link: {match['Link']}
 - Description: {match['Description']}
 - Duration: {match['Duration']}
 - Job Level: {match['Job Level']}

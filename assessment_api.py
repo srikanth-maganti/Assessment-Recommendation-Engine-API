@@ -1,9 +1,9 @@
 
 import os
-from huggingface_hub import login
+# from huggingface_hub import login
 import chromadb
 from sentence_transformers import SentenceTransformer
-login(os.environ["HUGGINGFACEHUB_API_TOKEN"])
+# login(os.environ["HUGGINGFACEHUB_API_TOKEN"])
 
 CHROMA_SERVER_URL = "https://chroma-server-umbu.onrender.com"
 
